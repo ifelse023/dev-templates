@@ -11,11 +11,10 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-      ...
+    { self
+    , nixpkgs
+    , flake-utils
+    , ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -26,6 +25,7 @@
         src = ./.;
         buildInputs = with pkgs; [
           #zlib
+          clang_18
         ];
         nativeBuildInputs = with pkgs; [
           pkg-config
