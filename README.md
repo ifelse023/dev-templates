@@ -1,15 +1,6 @@
-# Nix flake templates for dev environments
+# Personal nix flake templates for dev environments
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
-
-To initialize (where `${ENV}` is listed in the table below):
-
-```shell
-nix flake init --template github:ifelse023/dev-templates#${ENV}
-```
-
-Here's an example (for the [`rust`](./rust) template):
-
 ```shell
 # Initialize in the current project
 nix flake init --template github:the-nix-way/dev-templates#rust

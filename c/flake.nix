@@ -1,37 +1,68 @@
 {
-  description = "A Nix-flake-based C/C++ development environment";
+  description = "C Template";
 
-  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
-
-  outputs = { self, nixpkgs }:
-    let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
-        pkgs = import nixpkgs { inherit system; };
-      });
-    in
-    {
-      devShells = forEachSupportedSystem ({ pkgs }: {
-        default = pkgs.mkShell.override
-          {
-            # Override stdenv in order to change compiler:
-            # stdenv = pkgs.clangStdenv;
-          }
-          {
-            packages = with pkgs; [
-              clang-tools
-              cmake
-              codespell
-              conan
-              cppcheck
-              doxygen
-              gtest
-              lcov
-              vcpkg
-              vcpkg-tool
-            ] ++ (if system == "aarch64-darwin" then [ ] else [ gdb ]);
-          };
-      });
+  inputs = {
+    nixpkgs.url = "nixpkgs";
+    systems.url = "github:nix-systems/default-linux";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
     };
-}
+  };
 
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        pname = "memory-leak-creator";
+        version = "0.1";
+        src = ./.;
+        buildInputs = with pkgs; [
+          #zlib
+        ];
+        nativeBuildInputs = with pkgs; [
+          pkg-config
+          gnumake
+          gdb
+
+          clang-tools
+        ];
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          inherit buildInputs nativeBuildInputs;
+
+          # You can use NIX_CFLAGS_COMPILE to set the default CFLAGS for the shell
+          #NIX_CFLAGS_COMPILE = "-g";
+          # You can use NIX_LDFLAGS to set the default linker flags for the shell
+          #NIX_LDFLAGS = "-L${lib.getLib zstd}/lib -lzstd";
+        };
+
+        # Pinned gcc: remain on gcc10 even after `nix flake update`
+        #default = pkgs.mkShell.override { stdenv = pkgs.gcc10Stdenv; } {
+        #  inherit buildInputs nativeBuildInputs;
+        #};
+
+        efault = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
+          inherit buildInputs nativeBuildInputs;
+        };
+
+        packages.default = pkgs.stdenv.mkDerivation {
+          inherit
+            buildInputs
+            nativeBuildInputs
+            pname
+            version
+            src
+            ;
+        };
+      }
+    );
+}
