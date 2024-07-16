@@ -11,10 +11,11 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , ...
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -28,15 +29,15 @@
           clang_18
         ];
         nativeBuildInputs = with pkgs; [
-          pkg-config
-          gnumake
-          gdb
-
           clang-tools
+          pkg-config
+          gdb
+          just
         ];
       in
       {
         devShells.default = pkgs.mkShell {
+          hardeningDisable = [ "all" ];
           inherit buildInputs nativeBuildInputs;
 
           # You can use NIX_CFLAGS_COMPILE to set the default CFLAGS for the shell
@@ -49,8 +50,8 @@
         #default = pkgs.mkShell.override { stdenv = pkgs.gcc10Stdenv; } {
         #  inherit buildInputs nativeBuildInputs;
         #};
-
-        efault = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
+        #
+        default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
           inherit buildInputs nativeBuildInputs;
         };
 

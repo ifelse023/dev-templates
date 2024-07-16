@@ -1,0 +1,25 @@
+CC := "clang"
+CFLAGS := "-Wall -Wextra -Werror"
+RELEASEFLAGS := "-O3 -march=native"
+DEBUGFLAGS := "-g -O0"
+INCLUDES := "-I./include"
+
+set shell := ["bash", "-cu"]
+
+prep:
+    mkdir -p build/bin
+
+build: prep
+    {{CC}} {{CFLAGS}} {{DEBUGFLAGS}} {{INCLUDES}} -o build/bin/main src/*.c
+
+release: prep
+    {{CC}} {{CFLAGS}} {{RELEASEFLAGS}} {{INCLUDES}} -o build/bin/main src/*.c
+
+run: build
+    ./build/bin/main
+
+debug: build
+  gdb ./build/bin/main
+
+clean:
+    rm -rf build
