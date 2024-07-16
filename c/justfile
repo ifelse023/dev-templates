@@ -1,8 +1,10 @@
-CC := "clang"
-CFLAGS := "-Wall -Wextra -Werror"
-RELEASEFLAGS := "-O3 -march=native"
-DEBUGFLAGS := "-g -O0"
-INCLUDES := "-I./include"
+cc := "clang"
+c-flags := "-Wall -Wextra -Werror"
+release-flags := "-O3 -march=native"
+debug-flags := "-g -O0"
+includes := "-I./include"
+
+c-files := "$(fd -e c)"
 
 set shell := ["bash", "-cu"]
 
@@ -10,10 +12,10 @@ prep:
     mkdir -p build/bin
 
 build: prep
-    {{CC}} {{CFLAGS}} {{DEBUGFLAGS}} {{INCLUDES}} -o build/bin/main src/*.c
+    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
 
 release: prep
-    {{CC}} {{CFLAGS}} {{RELEASEFLAGS}} {{INCLUDES}} -o build/bin/main src/*.c
+    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o build/bin/main {{c-files}}
 
 run: build
     ./build/bin/main

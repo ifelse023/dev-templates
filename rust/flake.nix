@@ -1,51 +1,48 @@
 {
-  description = "A Nix-flake-based Rust development environment";
-
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-utils.url = "github:numtide/flake-utils";
+    naersk.url = "github:nix-community/naersk";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    fenix.url = "github:nix-community/fenix";
   };
 
-  outputs = { self, nixpkgs, rust-overlay }:
-    let
-      overlays = [
-        rust-overlay.overlays.default
-        (final: prev: {
-          rustToolchain =
-            let
-              rust = prev.rust-bin;
-            in
-            if builtins.pathExists ./rust-toolchain.toml then
-              rust.fromRustupToolchainFile ./rust-toolchain.toml
-            else if builtins.pathExists ./rust-toolchain then
-              rust.fromRustupToolchainFile ./rust-toolchain
-            else
-              rust.stable.latest.default.override {
-                extensions = [ "rust-src" "rustfmt" ];
-              };
-        })
-      ];
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
-        pkgs = import nixpkgs { inherit overlays system; };
-      });
-    in
+  outputs =
     {
-      devShells = forEachSupportedSystem ({ pkgs }: {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            rustToolchain
-            openssl
-            pkg-config
-            cargo-deny
-            cargo-edit
-            cargo-watch
-            rust-analyzer
+      self,
+      flake-utils,
+      naersk,
+      nixpkgs,
+      fenix,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = (import nixpkgs) {
+          inherit system;
+          overlays = [ fenix.overlays.default ];
+        };
+
+        naersk' = pkgs.callPackage naersk { };
+      in
+      rec {
+        defaultPackage = naersk'.buildPackage { src = ./.; };
+
+        devShell = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            nixfmt-rfc-style
+            rust-analyzer-nightly
+            sccache
+            mold-wrapped
+
+            (pkgs.fenix.latest.withComponents [
+              "cargo"
+              "clippy"
+              "rust-src"
+              "rustc"
+              "rustfmt"
+            ])
           ];
         };
-      });
-    };
+      }
+    );
 }
