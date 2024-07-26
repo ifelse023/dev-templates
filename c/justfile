@@ -1,5 +1,6 @@
+pname := "binary"
 cc := "clang"
-c-flags := "-Wall -Wextra -Werror"
+c-flags := "-Wall -Wextra -Werror -fuse-ld=mold"
 release-flags := "-O3 -march=native"
 debug-flags := "-g -O0"
 includes := "-I./include"
@@ -8,20 +9,25 @@ c-files := "$(fd -e c)"
 
 set shell := ["bash", "-cu"]
 
+run: build
+    ./build/bin/{{pname}}
+
 prep:
     mkdir -p build/bin
 
 build: prep
-    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o build/bin/{{pname}} {{c-files}}
 
 release: prep
-    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o build/bin/main {{c-files}}
+    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o build/bin/{{pname}} {{c-files}}
 
-run: build
-    ./build/bin/main
+arm:
+    nix build .#packages.aarch64-linux.default
+    scp result/bin/{{pname}} root@192.168.2.33:~/
+    ssh root@192.168.2.33 './{{pname}}'
 
 debug: build
-  gdb ./build/bin/main
+  gdb ./build/bin/{{pname}}
 
 clean:
     rm -rf build

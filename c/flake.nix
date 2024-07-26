@@ -21,7 +21,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pname = "memory-leak-creator";
+        pname = "binary";
         version = "0.1";
         src = ./.;
         buildInputs = with pkgs; [
@@ -30,8 +30,10 @@
         ];
         nativeBuildInputs = with pkgs; [
           clang-tools
+          fd
           pkg-config
           gdb
+          mold-wrapped
           just
         ];
       in
@@ -40,8 +42,13 @@
           hardeningDisable = [ "all" ];
           inherit buildInputs nativeBuildInputs;
 
-          # You can use NIX_CFLAGS_COMPILE to set the default CFLAGS for the shell
-          #NIX_CFLAGS_COMPILE = "-g";
+          NIX_CFLAGS_COMPILE = [
+            "-g"
+            "-O2"
+            "-Wall"
+            "-Werror"
+            "-fuse-ld=mold"
+          ];
           # You can use NIX_LDFLAGS to set the default linker flags for the shell
           #NIX_LDFLAGS = "-L${lib.getLib zstd}/lib -lzstd";
         };
@@ -56,6 +63,7 @@
         };
 
         packages.default = pkgs.stdenv.mkDerivation {
+          hardeningDisable = [ "all" ];
           inherit
             buildInputs
             nativeBuildInputs
@@ -63,6 +71,15 @@
             version
             src
             ;
+
+          buildPhase = ''
+            just build
+          '';
+
+          installPhase = ''
+            mkdir -p $out/bin
+            cp ./build/bin/${pname} $out/bin/
+          '';
         };
       }
     );
