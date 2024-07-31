@@ -9,72 +9,72 @@
       overlays = [
         (
           final: prev:
-          let
-            getSystem = "SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem')";
-            forEachDir = exec: ''
-              for dir in */; do
-                (
-                  cd "''${dir}"
+            let
+              getSystem = "SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem')";
+              forEachDir = exec: ''
+                for dir in */; do
+                  (
+                    cd "''${dir}"
 
-                  ${exec}
-                )
-              done
-            '';
-          in
-          {
-            format = final.writeShellApplication {
-              name = "format";
-              runtimeInputs = with final; [ nixpkgs-fmt ];
-              text = "nixpkgs-fmt '**/*.nix'";
-            };
-
-            # only run this locally, as Actions will run out of disk space
-            build = final.writeShellApplication {
-              name = "build";
-              text = ''
-                ${getSystem}
-
-                ${forEachDir ''
-                  echo "building ''${dir}"
-                  nix build ".#devShells.''${SYSTEM}.default"
-                ''}
+                    ${exec}
+                  )
+                done
               '';
-            };
+            in
+            {
+              format = final.writeShellApplication {
+                name = "format";
+                runtimeInputs = with final; [ nixpkgs-fmt ];
+                text = "nixpkgs-fmt '**/*.nix'";
+              };
 
-            check = final.writeShellApplication {
-              name = "check";
-              text = forEachDir ''
-                echo "checking ''${dir}"
-                nix flake check --all-systems --no-build
-              '';
-            };
+              # only run this locally, as Actions will run out of disk space
+              build = final.writeShellApplication {
+                name = "build";
+                text = ''
+                  ${getSystem}
 
-            dvt = final.writeShellApplication {
-              name = "dvt";
-              text = ''
-                if [ -z $1 ]; then
-                  echo "no template specified"
-                  exit 1
-                fi
+                  ${forEachDir ''
+                    echo "building ''${dir}"
+                    nix build ".#devShells.''${SYSTEM}.default"
+                  ''}
+                '';
+              };
 
-                TEMPLATE=$1
+              check = final.writeShellApplication {
+                name = "check";
+                text = forEachDir ''
+                  echo "checking ''${dir}"
+                  nix flake check --all-systems --no-build
+                '';
+              };
 
-                nix \
-                  --experimental-features 'nix-command flakes' \
-                  flake init \
-                  --template \
-                  "github:the-nix-way/dev-templates#''${TEMPLATE}"
-              '';
-            };
+              dvt = final.writeShellApplication {
+                name = "dvt";
+                text = ''
+                  if [ -z $1 ]; then
+                    echo "no template specified"
+                    exit 1
+                  fi
 
-            update = final.writeShellApplication {
-              name = "update";
-              text = forEachDir ''
-                echo "updating ''${dir}"
-                nix flake update
-              '';
-            };
-          }
+                  TEMPLATE=$1
+
+                  nix \
+                    --experimental-features 'nix-command flakes' \
+                    flake init \
+                    --template \
+                    "github:the-nix-way/dev-templates#''${TEMPLATE}"
+                '';
+              };
+
+              update = final.writeShellApplication {
+                name = "update";
+                text = forEachDir ''
+                  echo "updating ''${dir}"
+                  nix flake update
+                '';
+              };
+            }
         )
       ];
       supportedSystems = [
@@ -114,49 +114,49 @@
 
     //
 
-      {
-        templates = rec {
-          c = {
-            path = ./c;
-            description = "C development environment";
-          };
-
-          empty = {
-            path = ./empty;
-            description = "Empty dev template that you can customize at will";
-          };
-          latex = {
-            path = ./latex;
-            description = "LaTeX development environment";
-          };
-          nix = {
-            path = ./nix;
-            description = "Nix development environment";
-          };
-          python = {
-            path = ./python;
-            description = "Python development environment";
-          };
-          rust = {
-            path = ./rust;
-            description = "Rust development environment";
-          };
-
-          rust-toolchain = {
-            path = ./rust-toolchain;
-            description = "Rust development environment with Rust version defined by a rust-toolchain.toml file";
-          };
-          shell = {
-            path = ./shell;
-            description = "Shell script development environment";
-          };
-          zig = {
-            path = ./zig;
-            description = "Zig development environment";
-          };
-
-          # Aliases
-          rt = rust-toolchain;
+    {
+      templates = rec {
+        c = {
+          path = ./c;
+          description = "C development environment";
         };
+
+        empty = {
+          path = ./empty;
+          description = "Empty dev template that you can customize at will";
+        };
+        latex = {
+          path = ./latex;
+          description = "LaTeX development environment";
+        };
+        nix = {
+          path = ./nix;
+          description = "Nix development environment";
+        };
+        python = {
+          path = ./python;
+          description = "Python development environment";
+        };
+        rust = {
+          path = ./rust;
+          description = "Rust development environment";
+        };
+
+        rust-toolchain = {
+          path = ./rust-toolchain;
+          description = "Rust development environment with Rust version defined by a rust-toolchain.toml file";
+        };
+        shell = {
+          path = ./shell;
+          description = "Shell script development environment";
+        };
+        zig = {
+          path = ./zig;
+          description = "Zig development environment";
+        };
+
+        # Aliases
+        rt = rust-toolchain;
       };
+    };
 }

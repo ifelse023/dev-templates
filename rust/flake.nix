@@ -7,12 +7,12 @@
   };
 
   outputs =
-    {
-      self,
-      flake-utils,
-      naersk,
-      nixpkgs,
-      fenix,
+    { self
+    , flake-utils
+    , naersk
+    , nixpkgs
+    , fenix
+    ,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:

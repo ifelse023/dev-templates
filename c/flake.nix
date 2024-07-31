@@ -2,7 +2,7 @@
   description = "C Template";
 
   inputs = {
-    nixpkgs.url = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default-linux";
     flake-utils = {
       url = "github:numtide/flake-utils";
@@ -11,11 +11,10 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-      ...
+    { self
+    , nixpkgs
+    , flake-utils
+    , ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -26,15 +25,16 @@
         src = ./.;
         buildInputs = with pkgs; [
           #zlib
-          clang_18
+          clang
         ];
         nativeBuildInputs = with pkgs; [
           clang-tools
-          fd
           pkg-config
           gdb
           mold-wrapped
           just
+          valgrind
+          cppcheck
         ];
       in
       {
@@ -42,13 +42,13 @@
           hardeningDisable = [ "all" ];
           inherit buildInputs nativeBuildInputs;
 
-          NIX_CFLAGS_COMPILE = [
-            "-g"
-            "-O2"
-            "-Wall"
-            "-Werror"
-            "-fuse-ld=mold"
-          ];
+          # NIX_CFLAGS_COMPILE = [
+          #   "-g"
+          #   "-O2"
+          #   "-Wall"
+          #   "-Werror"
+          #   "-fuse-ld=mold"
+          # ];
           # You can use NIX_LDFLAGS to set the default linker flags for the shell
           #NIX_LDFLAGS = "-L${lib.getLib zstd}/lib -lzstd";
         };

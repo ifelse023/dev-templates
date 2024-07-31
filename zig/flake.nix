@@ -1,33 +1,31 @@
 {
-  description = "Zig development environment";
+  description = "Zig Flake";
 
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    zig.url = "github:mitchellh/zig-overlay";
+    zls.url = "github:zigtools/zls";
   };
+
   outputs =
-    { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (
+    inputs@{ self, ... }:
+    inputs.flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-        nativeBuildInputs = with pkgs; [
-          zig
-          zls
-        ];
-
-        buildInputs = with pkgs; [ ];
+        pkgs = import inputs.nixpkgs { inherit system; };
       in
       {
-        devShells.default = pkgs.mkShell { inherit nativeBuildInputs buildInputs; };
+        devShells.default = pkgs.mkShell {
+          name = "Zig";
+          nativeBuildInputs = [
+            inputs.zig.packages.${system}.master
+            inputs.zls.packages.${system}.default
+          ];
+          buildInputs = with pkgs; [ pkg-config ];
 
-        packages.default = pkgs.stdenv.mkDerivation {
-          pname = "name";
-          version = "0.0.0";
-          src = ./.;
-
-          nativeBuildInputs = nativeBuildInputs ++ [ pkgs.zig.hook ];
-          inherit buildInputs;
+          LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ ];
+          shellHook = "";
         };
       }
     );
