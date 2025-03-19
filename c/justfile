@@ -1,0 +1,37 @@
+cc := "clang"
+c-flags := "-Wall -Wextra -Wpedantic -Werror -std=c23"
+release-flags := "-O3 -march=native"
+debug-flags := "-g -O0"
+includes := "-I./include"
+c-files := "$(fd -e c)"
+
+set shell := ["bash", "-cu"]
+run: build
+    ./build/bin/main
+
+build: prep
+    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+
+build-leak: prep
+    {{cc}} {{c-flags}} -fsanitize=address {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+prep:
+    mkdir -p build/bin
+
+release: prep
+    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o build/bin/main {{c-files}}
+
+debug: build
+    gdb ./build/bin/main
+
+clean:
+    rm -rf build
+
+relaxed: prep
+    {{cc}} -w {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+    ./build/bin/main
+
+format:
+    clang-format -i {{c-files}}
+
+valgrind: build-leak
+    valgrind ./build/bin/main
