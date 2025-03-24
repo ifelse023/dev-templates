@@ -61,7 +61,7 @@
             name = "check";
             text = forEachDir ''
               echo "checking ''${dir}"
-              nix flake check --all-systems --no-build
+              nix flake check --no-build
             '';
           };
 
@@ -124,49 +124,49 @@
 
     //
 
-      {
-        templates = rec {
-          default = c;
+    {
+      templates = rec {
+        default = c;
 
-          pico-arm = {
-            path = ./pico-arm;
-            description = "rb pi pico2 development environment";
-          };
-          c = {
-            path = ./c;
-            description = "C development environment";
-          };
-
-          empty = {
-            path = ./empty;
-            description = "Empty dev template that you can customize at will";
-          };
-
-          java = {
-            path = ./java;
-            description = "Java development environment";
-          };
-
-          mysql = {
-            path = ./mysql;
-            description = "MySQL development environment";
-          };
-
-          nix = {
-            path = ./nix;
-            description = "Nix development environment";
-          };
-
-          platformio = {
-            path = ./platformio;
-            description = "PlatformIO development environment";
-          };
-
-          shell = {
-            path = ./shell;
-            description = "Shell script development environment";
-          };
-
+        pico-arm = {
+          path = ./pico-arm;
+          description = "rb pi pico2 development environment";
         };
+        c = {
+          path = ./c;
+          description = "C development environment";
+        };
+
+        empty = {
+          path = ./empty;
+          description = "Empty dev template that you can customize at will";
+        };
+
+        java = {
+          path = ./java;
+          description = "Java development environment";
+        };
+
+        mysql = {
+          path = ./mysql;
+          description = "MySQL development environment";
+        };
+
+        nix = {
+          path = ./nix;
+          description = "Nix development environment";
+        };
+
+        platformio = {
+          path = ./platformio;
+          description = "PlatformIO development environment";
+        };
+
+        shell = {
+          path = ./shell;
+          description = "Shell script development environment";
+        };
+
       };
+    };
 }

@@ -30,7 +30,7 @@
               }
               {
                 packages = with pkgs; [
-                  # clang-tools
+                  clang-tools
                   # cmake
                   # ninja
                   cppcheck

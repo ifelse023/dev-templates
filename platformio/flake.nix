@@ -28,11 +28,10 @@
               with pkgs;
               [
                 clang-tools
-                cppcheck
+                # cppcheck
                 platformio-core.udev
                 platformio
-              ]
-              ++ pkgs.lib.optionals (system != "aarch64-darwin") [ gdb ];
+              ];
 
             shellHook = ''
               export PLATFORMIO_CORE_DIR=$PWD/.platformio

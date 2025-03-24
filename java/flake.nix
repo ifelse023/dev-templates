@@ -6,7 +6,7 @@
   outputs =
     { self, nixpkgs }:
     let
-      javaVersion = 17;
+      javaVersion = 23;
 
       supportedSystems = [
         "x86_64-linux"
@@ -42,8 +42,8 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
-              jdk17
-              maven
+              jdk23
+              # maven
             ];
 
             shellHook = '''';
