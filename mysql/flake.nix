@@ -39,11 +39,6 @@
                   mariadb
                 ];
 
-                enterShell = ''
-                  echo "MySQL/MariaDB development environment ready"
-                  echo "Run 'devenv up' to start the service"
-                '';
-
                 services.mysql = {
                   enable = true;
                   package = pkgs.mariadb;

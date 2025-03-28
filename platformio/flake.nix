@@ -27,7 +27,7 @@
             packages =
               with pkgs;
               [
-                clang-tools
+                # clang-tools
                 # cppcheck
                 platformio-core.udev
                 platformio

@@ -31,11 +31,11 @@
               {
                 packages = with pkgs; [
                   clang-tools
-                  # cmake
-                  # ninja
                   cppcheck
                   lldb
                   bear
+                  # cmake
+                  # ninja
                 ];
               };
         }

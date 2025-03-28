@@ -1,37 +1,39 @@
+set shell := ["bash", "-cu"]
 cc := "clang"
-c-flags := "-Wall -Wextra -Wpedantic -Werror -std=c23"
+c-flags := "-Wall -Wextra -Wpedantic -std=c23"
 release-flags := "-O3 -march=native"
 debug-flags := "-g -O0"
 includes := "-I./include"
 c-files := "$(fd -e c)"
+bin_path := "build/main"
 
-set shell := ["bash", "-cu"]
 run: build
-    ./build/bin/main
+    ./{{bin_path}}
 
 build: prep
-    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+    {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o {{bin_path}} {{c-files}}
 
 build-leak: prep
-    {{cc}} {{c-flags}} -fsanitize=address {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
+    {{cc}} {{c-flags}} -fsanitize=address {{debug-flags}} {{includes}} -o {{bin_path}} {{c-files}}
+
 prep:
-    mkdir -p build/bin
+    mkdir -p build
 
 release: prep
-    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o build/bin/main {{c-files}}
+    {{cc}} {{c-flags}} {{release-flags}} {{includes}} -o {{bin_path}} {{c-files}}
 
 debug: build
-    gdb ./build/bin/main
+    gdb ./{{bin_path}}
 
 clean:
     rm -rf build
 
 relaxed: prep
-    {{cc}} -w {{debug-flags}} {{includes}} -o build/bin/main {{c-files}}
-    ./build/bin/main
+    {{cc}} -w {{debug-flags}} {{includes}} -o {{bin_path}} {{c-files}}
+    ./{{bin_path}}
 
 format:
     clang-format -i {{c-files}}
 
-valgrind: build-leak
-    valgrind ./build/bin/main
+valgrind: build
+    valgrind ./{{bin_path}}
