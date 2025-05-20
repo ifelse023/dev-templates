@@ -24,17 +24,17 @@
         { pkgs }:
         {
           default = pkgs.mkShell {
-            packages =
-              with pkgs;
-              [
-                # clang-tools
-                # cppcheck
-                platformio-core.udev
-                platformio
-              ];
+            packages = with pkgs; [
+              # clang-tools
+              # cppcheck
+              platformio-core.udev
+              platformio
+              ncurses5
+            ];
 
             shellHook = ''
               export PLATFORMIO_CORE_DIR=$PWD/.platformio
+              export LD_LIBRARY_PATH=${pkgs.ncurses5.out}/lib:$LD_LIBRARY_PATH
             '';
           };
         }
