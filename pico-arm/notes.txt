@@ -1,4 +1,8 @@
 cmake -G Ninja -B build/ -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+
 ln -s build/compile_commands.json .
 
 ninja -C build/
+
+
+picotool load -v -x your-build-file.uf2 -f

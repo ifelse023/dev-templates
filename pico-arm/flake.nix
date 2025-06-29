@@ -34,7 +34,7 @@
                   gcc-arm-embedded-13
                   cmake
                   ninja
-                  cppcheck
+                  # cppcheck
                 ];
                 shellHook = ''
                   export PICO_SDK_PATH=${pkgs.pico-sdk}/lib/pico-sdk
