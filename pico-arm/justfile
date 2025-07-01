@@ -1,0 +1,41 @@
+# Default task: build + flas
+default: build flash
+
+build:
+    cmake -G Ninja -B build/ -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+    ninja -C build/
+
+link-compile-commands:
+    ln -sf build/compile_commands.json .
+
+flash:
+    picotool load -v -x build/hey.uf2 -f
+
+shell:
+    tio /dev/pico2w
+
+debug-openocd:
+    openocd -f interface/cmsis-dap.cfg \
+            -f target/rp2350.cfg \
+            -c "adapter speed 5000"
+
+debug-gdb:
+    just debug-openocd &
+    sleep 1
+    gdb build/hey.elf -ex "target extended-remote localhost:3333" \
+                      -ex "monitor reset init" \
+                      -ex "load" \
+                      -ex "break main" \
+                      -ex "continue"
+
+clean:
+    ninja -C build/ -t clean || true
+    rm -rf build/
+
+clean-links:
+    rm -f compile_commands.json
+
+dist-clean: clean clean-links
+
+rebuild: clean build flash
+
