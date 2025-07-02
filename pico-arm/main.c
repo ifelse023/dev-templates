@@ -1,15 +1,15 @@
 #include "pico/stdlib.h"
 #include <stdio.h>
 
-#define PICO_DEFAULT_LED_PIN 15
+#define PIN15 15
 #define LED_DELAY_MS 1000
 
 void pico_led_init(void) {
-  gpio_init(PICO_DEFAULT_LED_PIN);
-  gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+  gpio_init(PIN15);
+  gpio_set_dir(PIN15, GPIO_OUT);
 }
 
-void pico_set_led(bool led_on) { gpio_put(PICO_DEFAULT_LED_PIN, led_on); }
+void pico_set_led(bool led_on) { gpio_put(PIN15, led_on); }
 
 int main() {
   stdio_init_all();
