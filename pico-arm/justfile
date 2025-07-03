@@ -1,4 +1,3 @@
-# Default task: build + flas
 default: build flash
 
 build:

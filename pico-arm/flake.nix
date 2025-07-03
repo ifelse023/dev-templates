@@ -30,15 +30,15 @@
               }
               {
                 packages = with pkgs; [
-                  pico-sdk
                   gcc-arm-embedded-13
                   cmake
                   ninja
+                  gdb
+                  neocmakelsp
+                  tio
                   # cppcheck
                 ];
-                shellHook = ''
-                  export PICO_SDK_PATH=${pkgs.pico-sdk}/lib/pico-sdk
-                '';
+                shellHook = '''';
               };
         }
       );

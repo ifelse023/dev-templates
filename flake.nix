@@ -124,49 +124,38 @@
 
     //
 
-    {
-      templates = rec {
-        default = c;
+      {
+        templates = rec {
+          default = c;
 
-        pico-arm = {
-          path = ./pico-arm;
-          description = "rb pi pico2 development environment";
-        };
-        c = {
-          path = ./c;
-          description = "C development environment";
-        };
+          pico-arm = {
+            path = ./pico-arm;
+            description = "rb pi pico2 development environment";
+          };
+          c = {
+            path = ./c;
+            description = "C development environment";
+          };
 
-        empty = {
-          path = ./empty;
-          description = "Empty dev template that you can customize at will";
-        };
+          empty = {
+            path = ./empty;
+            description = "Empty dev template that you can customize at will";
+          };
+          nix = {
+            path = ./nix;
+            description = "Nix development environment";
+          };
 
-        java = {
-          path = ./java;
-          description = "Java development environment";
-        };
+          platformio = {
+            path = ./platformio;
+            description = "PlatformIO development environment";
+          };
 
-        mysql = {
-          path = ./mysql;
-          description = "MySQL development environment";
-        };
+          shell = {
+            path = ./shell;
+            description = "Shell script development environment";
+          };
 
-        nix = {
-          path = ./nix;
-          description = "Nix development environment";
         };
-
-        platformio = {
-          path = ./platformio;
-          description = "PlatformIO development environment";
-        };
-
-        shell = {
-          path = ./shell;
-          description = "Shell script development environment";
-        };
-
       };
-    };
 }
