@@ -35,5 +35,8 @@ relaxed: prep
 format:
     clang-format -i {{c-files}}
 
+bear: prep
+  bear -- {{cc}} {{c-flags}} {{debug-flags}} {{includes}} -o {{bin_path}} {{c-files}}
+
 valgrind: build
     valgrind ./{{bin_path}}
