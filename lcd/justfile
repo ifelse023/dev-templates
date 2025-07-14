@@ -27,6 +27,12 @@ debug-gdb:
                       -ex "load" \
                       -ex "break main" \
                       -ex "continue"
+gdb:
+    gdb build/main.elf -ex "target extended-remote localhost:3333" \
+                      -ex "monitor reset init" \
+                      -ex "load" \
+                      -ex "break main" \
+                      -ex "continue"
 
 clean:
     ninja -C build/ -t clean || true

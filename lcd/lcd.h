@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <stdint.h>
@@ -38,5 +37,4 @@ typedef enum {
 void lcd_init(void);
 void lcd_clear(void);
 void lcd_set_cursor(int line, int position);
-void lcd_string(const char *s);
-void lcd_char(char val);
+void lcd_write_line(int line, int position, const char *str);

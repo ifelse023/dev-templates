@@ -1,9 +1,10 @@
 #include "hardware/i2c.h"
 #include "lcd.h"
+#include "led.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
 
-int main() {
+int main(void) {
   stdio_init_all();
 #if !defined(i2c_default) || !defined(PICO_DEFAULT_I2C_SDA_PIN) ||             \
     !defined(PICO_DEFAULT_I2C_SCL_PIN)
@@ -18,14 +19,16 @@ int main() {
                              GPIO_FUNC_I2C));
 
   lcd_init();
-
+  int rc = pico_led_init();
+  hard_assert(rc == PICO_OK);
   for (;;) {
     for (size_t i = 0; i < 10; ++i) {
-      lcd_set_cursor(0, 0);
-      lcd_string("Hello");
-      lcd_set_cursor(1, 0);
-      lcd_string("World!");
-      sleep_ms(5000);
+      led_on();
+      lcd_write_line(0, 0, "Hey");
+      lcd_write_line(1, 0, "World!");
+      sleep_ms(1000);
+      led_off();
+      sleep_ms(1000);
       lcd_clear();
     }
   }
