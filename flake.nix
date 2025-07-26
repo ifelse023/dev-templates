@@ -124,32 +124,32 @@
 
     //
 
-      {
-        templates = rec {
-          default = c;
+    {
+      templates = rec {
+        default = c;
 
-          pico-arm = {
-            path = ./pico-arm;
-            description = "rb pi pico2 development environment";
-          };
-          c = {
-            path = ./c;
-            description = "C development environment";
-          };
+        pico-arm = {
+          path = ./pico-arm;
+          description = "rb pi pico2 development environment";
+        };
+        c = {
+          path = ./c;
+          description = "C development environment";
+        };
 
-          empty = {
-            path = ./empty;
-            description = "Empty dev template that you can customize at will";
-          };
-          nix = {
-            path = ./nix;
-            description = "Nix development environment";
-          };
+        empty = {
+          path = ./empty;
+          description = "Empty dev template that you can customize at will";
+        };
+        nix = {
+          path = ./nix;
+          description = "Nix development environment";
+        };
 
-          platformio = {
-            path = ./platformio;
-            description = "PlatformIO development environment";
-          };
+        platformio = {
+          path = ./platformio;
+          description = "PlatformIO development environment";
         };
       };
+    };
 }
