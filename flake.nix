@@ -150,12 +150,6 @@
             path = ./platformio;
             description = "PlatformIO development environment";
           };
-
-          shell = {
-            path = ./shell;
-            description = "Shell script development environment";
-          };
-
         };
       };
 }
